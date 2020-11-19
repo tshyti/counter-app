@@ -5,6 +5,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import CounterSetup from "./components/CounterSetup/CounterSetup";
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import CounterCountdown from "./components/CounterCountdown/CounterCountdown";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -15,24 +17,19 @@ const useStyles = makeStyles((theme) => ({
   },
   header: {
     marginBottom: theme.spacing(3)
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2)
   }
 }));
 
 export default function App() {
   const classes = useStyles();
 
-  const [hasTimerStarted, setHasTimerStarted] = useState(false);
-
-  function handleTimerStart() {
-    setHasTimerStarted(true);
-  }
+  const hasCounterStarted = useSelector(
+    (state) => state.counter.hasCounterStarted
+  );
 
   function renderContent() {
-    if (hasTimerStarted) {
-      return null;
+    if (hasCounterStarted) {
+      return <CounterCountdown />;
     }
     return <CounterSetup />;
   }
@@ -45,16 +42,6 @@ export default function App() {
           Timer App
         </Typography>
         {renderContent()}
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          color="primary"
-          className={classes.submit}
-          onClick={handleTimerStart}
-        >
-          Start
-        </Button>
       </div>
     </Container>
   );
