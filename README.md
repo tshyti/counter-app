@@ -1,6 +1,8 @@
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Built with Material UI and Redux Toolkit.
+Deployed app: [Counter](https://tshyti-counter-app.netlify.app/).
 
 ## Available Scripts
 
