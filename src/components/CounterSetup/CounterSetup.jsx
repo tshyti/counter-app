@@ -8,7 +8,7 @@ import {
   removeRestSeconds,
   removeSets,
   removeWorkSeconds,
-  setHasCounterStarted
+  startCounter
 } from "../../redux/counterSlice";
 
 const useStyles = makeStyles((theme) => ({
@@ -60,7 +60,7 @@ export default function CounterSetup() {
         variant="contained"
         color="primary"
         className={classes.submit}
-        onClick={() => dispatch(setHasCounterStarted(true))}
+        onClick={() => dispatch(startCounter())}
       >
         Start
       </Button>

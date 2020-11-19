@@ -1,14 +1,23 @@
-import { Button, Grid, makeStyles } from "@material-ui/core";
+import { Button, Grid, makeStyles, Typography } from "@material-ui/core";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import useInterval from "../../hooks/useInterval";
 import {
-  setHasCounterStarted,
-  toggleIsCounterPaused
+  stopCounter,
+  toggleIsCounterPaused,
+  updateRemainingRestSeconds,
+  updateRemainingSets,
+  updateRemainingWorkSecods
 } from "../../redux/counterSlice";
 import CounterControl from "../CounterControl/CounterControl";
 
 const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(1, 0)
+  },
+  text: {
+    textAlign: "center",
+    width: "100%"
   }
 }));
 
@@ -17,9 +26,47 @@ export default function CounterCountdown() {
   const dispatch = useDispatch();
 
   const isCounterPaused = useSelector((state) => state.counter.isCounterPaused);
+  const remainingSets = useSelector((state) => state.counter.remainingSets);
+  const remainingWorkSeconds = useSelector(
+    (state) => state.counter.remainingWorkSeconds
+  );
+  const remainingRestSeconds = useSelector(
+    (state) => state.counter.remainingRestSeconds
+  );
+
+  useInterval(() => {
+    updateCounter();
+  }, 1000);
+
+  function updateCounter() {
+    if (isCounterPaused || remainingSets === 0) {
+      return;
+    }
+
+    if (remainingWorkSeconds !== 0) {
+      dispatch(updateRemainingWorkSecods());
+      return;
+    }
+    if (remainingRestSeconds !== 0) {
+      dispatch(updateRemainingRestSeconds());
+      return;
+    }
+    dispatch(updateRemainingSets());
+  }
 
   return (
     <Grid container>
+      <Grid container item justify="center">
+        <Typography component="p">Remaining:</Typography>
+        <Typography component="h2" variant="h2" className={classes.text}>
+          {remainingSets}
+        </Typography>
+      </Grid>
+      <Grid container item justify="center">
+        <Typography component="h2" variant="h2" className={classes.text}>
+          {remainingWorkSeconds}
+        </Typography>
+      </Grid>
       <Button
         type="submit"
         fullWidth
@@ -36,7 +83,7 @@ export default function CounterCountdown() {
         variant="contained"
         color="primary"
         className={classes.submit}
-        onClick={() => dispatch(setHasCounterStarted(false))}
+        onClick={() => dispatch(stopCounter())}
       >
         Stop
       </Button>

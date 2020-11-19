@@ -34,16 +34,25 @@ const counterSlice = createSlice({
       decrement(state, "restSeconds");
     },
     updateRemainingSets(state) {
-      decrement(state, "remainingSets");
+      state.remainingSets--;
     },
     updateRemainingWorkSecods(state) {
-      decrement(state, "remainingWorkSeconds");
+      state.remainingWorkSeconds--;
     },
     updateRemainingRestSeconds(state) {
-      decrement(state, "remainingRestSeconds");
+      state.remainingRestSeconds--;
     },
-    setHasCounterStarted(state, { payload }) {
-      state.hasCounterStarted = payload;
+    startCounter(state) {
+      return {
+        ...state,
+        remainingSets: state.setsNumber,
+        remainingWorkSeconds: state.workSeconds,
+        remainingRestSeconds: state.restSeconds,
+        hasCounterStarted: true
+      };
+    },
+    stopCounter(state) {
+      state.hasCounterStarted = false;
     },
     toggleIsCounterPaused(state) {
       state.isCounterPaused = !state.isCounterPaused;
@@ -68,7 +77,8 @@ export const {
   updateRemainingRestSeconds,
   updateRemainingSets,
   updateRemainingWorkSecods,
-  setHasCounterStarted,
+  startCounter,
+  stopCounter,
   toggleIsCounterPaused
 } = counterSlice.actions;
 
