@@ -42,7 +42,7 @@ export default function CounterSetup() {
         onDecrease={() => dispatch(removeWorkSeconds())}
       >
         <Typography component="h6" variant="h6">
-          {workSeconds}
+          {workSeconds}s
         </Typography>
       </CounterControl>
       <CounterControl
@@ -51,7 +51,7 @@ export default function CounterSetup() {
         onDecrease={() => dispatch(removeRestSeconds())}
       >
         <Typography component="h6" variant="h6">
-          {restSeconds}
+          {restSeconds}s
         </Typography>
       </CounterControl>
       <Button

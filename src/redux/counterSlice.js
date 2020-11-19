@@ -19,22 +19,27 @@ const counterSlice = createSlice({
       state.setsNumber++;
     },
     removeSets(state) {
-      decrement(state, "setsNumber");
+      decrementTillOne(state, "setsNumber");
     },
     addWorkSeconds(state) {
       state.workSeconds++;
     },
     removeWorkSeconds(state) {
-      decrement(state, "workSeconds");
+      decrementTillOne(state, "workSeconds");
     },
     addRestSeconds(state) {
       state.restSeconds++;
     },
     removeRestSeconds(state) {
-      decrement(state, "restSeconds");
+      decrementTillOne(state, "restSeconds");
     },
     updateRemainingSets(state) {
-      state.remainingSets--;
+      return {
+        ...state,
+        remainingSets: state.remainingSets - 1,
+        remainingWorkSeconds: state.workSeconds,
+        remainingRestSeconds: state.restSeconds
+      };
     },
     updateRemainingWorkSecods(state) {
       state.remainingWorkSeconds--;
@@ -48,7 +53,8 @@ const counterSlice = createSlice({
         remainingSets: state.setsNumber,
         remainingWorkSeconds: state.workSeconds,
         remainingRestSeconds: state.restSeconds,
-        hasCounterStarted: true
+        hasCounterStarted: true,
+        isCounterPaused: false
       };
     },
     stopCounter(state) {
@@ -60,7 +66,7 @@ const counterSlice = createSlice({
   }
 });
 
-function decrement(state, propertyName) {
+function decrementTillOne(state, propertyName) {
   if (state[propertyName] === 1) {
     return state;
   }

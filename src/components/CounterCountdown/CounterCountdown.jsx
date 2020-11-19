@@ -1,15 +1,14 @@
 import { Button, Grid, makeStyles, Typography } from "@material-ui/core";
-import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import useInterval from "../../hooks/useInterval";
 import {
+  startCounter,
   stopCounter,
   toggleIsCounterPaused,
   updateRemainingRestSeconds,
   updateRemainingSets,
   updateRemainingWorkSecods
 } from "../../redux/counterSlice";
-import CounterControl from "../CounterControl/CounterControl";
 
 const useStyles = makeStyles((theme) => ({
   submit: {
@@ -34,15 +33,16 @@ export default function CounterCountdown() {
     (state) => state.counter.remainingRestSeconds
   );
 
-  useInterval(() => {
-    updateCounter();
-  }, 1000);
+  const shouldRunInterval = !(isCounterPaused || remainingSets === 0);
+
+  useInterval(
+    () => {
+      updateCounter();
+    },
+    shouldRunInterval ? 1000 : null
+  );
 
   function updateCounter() {
-    if (isCounterPaused || remainingSets === 0) {
-      return;
-    }
-
     if (remainingWorkSeconds !== 0) {
       dispatch(updateRemainingWorkSecods());
       return;
@@ -54,18 +54,69 @@ export default function CounterCountdown() {
     dispatch(updateRemainingSets());
   }
 
+  function renderRemainingSeconds() {
+    if (remainingWorkSeconds !== 0) {
+      return (
+        <>
+          <Typography component="p">Work remaining:</Typography>
+          <Typography component="h2" variant="h2" className={classes.text}>
+            {remainingWorkSeconds}s
+          </Typography>
+        </>
+      );
+    }
+    return (
+      <>
+        <Typography component="p">Rest remaining:</Typography>
+        <Typography component="h2" variant="h2" className={classes.text}>
+          {remainingRestSeconds}s{" "}
+        </Typography>
+      </>
+    );
+  }
+
+  if (remainingSets === 0) {
+    return (
+      <Grid container>
+        <Grid container item justify="center">
+          <Typography component="p">
+            Good job, you completed the work
+          </Typography>
+        </Grid>
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          color="primary"
+          className={classes.submit}
+          onClick={() => dispatch(stopCounter())}
+        >
+          Go Back
+        </Button>
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          color="primary"
+          className={classes.submit}
+          onClick={() => dispatch(startCounter())}
+        >
+          Start again
+        </Button>
+      </Grid>
+    );
+  }
+
   return (
     <Grid container>
       <Grid container item justify="center">
-        <Typography component="p">Remaining:</Typography>
+        <Typography component="p">Remaining Sets:</Typography>
         <Typography component="h2" variant="h2" className={classes.text}>
           {remainingSets}
         </Typography>
       </Grid>
       <Grid container item justify="center">
-        <Typography component="h2" variant="h2" className={classes.text}>
-          {remainingWorkSeconds}
-        </Typography>
+        {renderRemainingSeconds()}
       </Grid>
       <Button
         type="submit"
